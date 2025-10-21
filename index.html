@@ -84,3 +84,291 @@
   </div>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎮 Mini Spiele Sammlung</title>
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: #111;
+    color: white;
+    margin: 0;
+    overflow: hidden;
+    text-align: center;
+  }
+  h1 {
+    margin-top: 20px;
+    font-size: 2em;
+  }
+  #menu, #game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 90vh;
+  }
+  button {
+    margin: 10px;
+    padding: 15px 30px;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 10px;
+    background: #4CAF50;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  button:hover { background: #66bb6a; }
+  #back-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: none;
+  }
+  canvas {
+    background: #222;
+    border-radius: 10px;
+  }
+</style>
+</head>
+<body>
+<h1>🎮 Mini Spiele Sammlung</h1>
+
+<div id="menu">
+  <button onclick="startGame('snake')">🐍 Snake</button>
+  <button onclick="startGame('memory')">🧠 Memory</button>
+  <button onclick="startGame('mines')">💣 Minesweeper</button>
+  <button onclick="startGame('runner')">🕹️ Jump & Run</button>
+  <button onclick="startGame('catch')">🎯 Ball Catch</button>
+</div>
+
+<button id="back-btn" onclick="showMenu()">⬅️ Zurück</button>
+<div id="game-container"></div>
+
+<script>
+function startGame(game) {
+  document.getElementById('menu').style.display = 'none';
+  document.getElementById('back-btn').style.display = 'block';
+  const container = document.getElementById('game-container');
+  container.innerHTML = '';
+
+  switch(game) {
+    case 'snake': loadSnake(container); break;
+    case 'memory': loadMemory(container); break;
+    case 'mines': loadMines(container); break;
+    case 'runner': loadRunner(container); break;
+    case 'catch': loadCatch(container); break;
+  }
+}
+
+function showMenu() {
+  document.getElementById('menu').style.display = 'flex';
+  document.getElementById('game-container').innerHTML = '';
+  document.getElementById('back-btn').style.display = 'none';
+}
+
+/* ========== 🐍 Snake ========== */
+function loadSnake(container) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 400; canvas.height = 400;
+  container.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+
+  let snake = [{x:200, y:200}];
+  let dir = {x:20, y:0};
+  let food = {x:100, y:100};
+  let alive = true;
+
+  document.onkeydown = e => {
+    if(e.key === 'ArrowUp' && dir.y === 0) dir = {x:0, y:-20};
+    if(e.key === 'ArrowDown' && dir.y === 0) dir = {x:0, y:20};
+    if(e.key === 'ArrowLeft' && dir.x === 0) dir = {x:-20, y:0};
+    if(e.key === 'ArrowRight' && dir.x === 0) dir = {x:20, y:0};
+  };
+
+  function gameLoop() {
+    if(!alive) return alert('Game Over!'), showMenu();
+
+    const head = {x: snake[0].x + dir.x, y: snake[0].y + dir.y};
+    if (head.x < 0 || head.y < 0 || head.x >= 400 || head.y >= 400 ||
+        snake.some(p => p.x === head.x && p.y === head.y)) alive = false;
+
+    snake.unshift(head);
+    if(head.x === food.x && head.y === food.y) {
+      food = {x: Math.floor(Math.random()*20)*20, y: Math.floor(Math.random()*20)*20};
+    } else snake.pop();
+
+    ctx.fillStyle = '#222'; ctx.fillRect(0,0,400,400);
+    ctx.fillStyle = '#4CAF50'; snake.forEach(p => ctx.fillRect(p.x,p.y,20,20));
+    ctx.fillStyle = 'red'; ctx.fillRect(food.x, food.y, 20, 20);
+    setTimeout(gameLoop, 100);
+  }
+  gameLoop();
+}
+
+/* ========== 🎯 Ball Catch ========== */
+function loadCatch(container) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 400; canvas.height = 400;
+  container.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+
+  let playerX = 175;
+  let ballY = 0, ballX = Math.random()*370;
+  let score = 0;
+
+  document.addEventListener("mousemove", e => {
+    playerX = e.clientX - canvas.getBoundingClientRect().left - 25;
+  });
+
+  function gameLoop() {
+    ctx.fillStyle = '#222'; ctx.fillRect(0,0,400,400);
+
+    ctx.fillStyle = 'red'; ctx.beginPath();
+    ctx.arc(ballX+15, ballY+15, 15, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#4CAF50';
+    ctx.fillRect(playerX, 370, 50, 20);
+
+    ballY += 4;
+    if (ballY > 370 && ballY < 390 && ballX > playerX-20 && ballX < playerX+50) {
+      score++; ballY = 0; ballX = Math.random()*370;
+    }
+    if (ballY > 400) { ballY = 0; ballX = Math.random()*370; }
+    ctx.fillStyle = 'white';
+    ctx.fillText("Score: "+score, 10, 20);
+    requestAnimationFrame(gameLoop);
+  }
+  gameLoop();
+}
+
+/* ========== 🧠 Memory ========== */
+function loadMemory(container) {
+  const cards = [];
+  const values = ['🐶','🐱','🐭','🐹','🐰','🐻','🐼','🦊'];
+  const all = [...values, ...values].sort(() => 0.5 - Math.random());
+  let first = null, lock = false, matches = 0;
+
+  all.forEach((val, i) => {
+    const card = document.createElement('button');
+    card.textContent = '❓';
+    card.style.fontSize = '2em';
+    card.style.margin = '5px';
+    card.style.width = '60px';
+    card.style.height = '60px';
+    card.onclick = () => {
+      if(lock || card.textContent !== '❓') return;
+      card.textContent = val;
+      if(!first) first = card;
+      else {
+        if(first.textContent === card.textContent) {
+          first.style.background = '#4CAF50';
+          card.style.background = '#4CAF50';
+          matches++;
+          if(matches === values.length) setTimeout(()=>alert('Gewonnen!'),200);
+        } else {
+          lock = true;
+          setTimeout(()=>{ first.textContent = '❓'; card.textContent = '❓'; lock = false; },800);
+        }
+        first = null;
+      }
+    };
+    cards.push(card);
+    container.appendChild(card);
+  });
+}
+
+/* ========== 💣 Minesweeper ========== */
+function loadMines(container) {
+  const size = 5, mines = 5;
+  const grid = [];
+  let revealed = 0;
+
+  for(let y=0;y<size;y++) {
+    const row = [];
+    const div = document.createElement('div');
+    for(let x=0;x<size;x++) {
+      const btn = document.createElement('button');
+      btn.textContent = '⬜';
+      btn.style.width = '40px'; btn.style.height = '40px';
+      btn.style.fontSize = '1.2em';
+      div.appendChild(btn);
+      row.push({mine:false,btn});
+    }
+    container.appendChild(div);
+    grid.push(row);
+  }
+
+  // Minen zufällig platzieren
+  for(let i=0;i<mines;i++){
+    let x,y; do {
+      x=Math.floor(Math.random()*size);
+      y=Math.floor(Math.random()*size);
+    } while(grid[y][x].mine);
+    grid[y][x].mine=true;
+  }
+
+  function count(x,y){
+    let c=0;
+    for(let i=-1;i<=1;i++)for(let j=-1;j<=1;j++){
+      const nx=x+i,ny=y+j;
+      if(nx>=0&&ny>=0&&nx<size&&ny<size&&grid[ny][nx].mine)c++;
+    }
+    return c;
+  }
+
+  grid.flat().forEach((cell,_,arr)=>{
+    cell.btn.onclick=()=>{
+      if(cell.mine){ alert('💥 Game Over!'); showMenu(); return; }
+      const val=count(arr.indexOf(cell)%size,Math.floor(arr.indexOf(cell)/size));
+      cell.btn.textContent = val||'⬛';
+      cell.btn.disabled=true;
+      revealed++;
+      if(revealed===size*size-mines) alert('🎉 Gewonnen!');
+    };
+  });
+}
+
+/* ========== 🕹️ Jump & Run ========== */
+function loadRunner(container) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 400; canvas.height = 200;
+  container.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+
+  let playerY = 150, velY = 0, gravity = 0.8;
+  let obstacleX = 400, score = 0;
+
+  document.onkeydown = e => {
+    if(e.code === 'Space' && playerY >= 150) velY = -12;
+  };
+
+  function gameLoop() {
+    ctx.fillStyle = '#222'; ctx.fillRect(0,0,400,200);
+    ctx.fillStyle = '#4CAF50'; ctx.fillRect(20, playerY, 30, 30);
+    ctx.fillStyle = 'red'; ctx.fillRect(obstacleX, 170, 30, 30);
+    ctx.fillStyle = 'white'; ctx.fillText('Score: '+score, 10, 20);
+
+    playerY += velY; velY += gravity;
+    if(playerY > 150) playerY = 150;
+    obstacleX -= 5;
+
+    if(obstacleX < -30) {
+      obstacleX = 400;
+      score++;
+    }
+
+    if(obstacleX < 50 && obstacleX > 20 && playerY > 140) {
+      alert('💥 Game Over!');
+      showMenu();
+      return;
+    }
+    requestAnimationFrame(gameLoop);
+  }
+  gameLoop();
+}
+</script>
+</body>
+</html>
