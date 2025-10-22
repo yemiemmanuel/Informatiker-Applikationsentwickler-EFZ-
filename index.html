@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Bewerbung & Mini Spiele</title>
   <style>
     html { scroll-behavior: smooth; }
@@ -10,7 +10,7 @@
       margin: 0;
       font-family: Arial, sans-serif;
       color: #333;
-      background: #f5f5f5;
+      background: linear-gradient(135deg, #ffffff 0%, #fff6fb 50%, #ffeef6 100%);
     }
     .nav {
       position: sticky; top: 0; z-index: 10;
@@ -42,21 +42,22 @@
     @media (max-width: 600px) { .header h1 { font-size: 1.5rem; } }
 
     .games {
-      background: #111;
-      color: #fff;
+      color: #333;
       padding: 40px 20px 80px;
     }
-    .games h1 { margin: 0 0 20px; font-size: 2em; text-align: center; }
+    .games h1 { margin: 0 0 20px; font-size: 2em; text-align: center; color: #800000; }
     #menu, #game-container {
-      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 10px;
     }
     .games button {
-      margin: 10px; padding: 15px 30px; font-size: 1.1em; border: none; border-radius: 10px;
-      background: #4CAF50; color: white; cursor: pointer; transition: 0.3s;
+      margin: 10px; padding: 12px 22px; font-size: 1.05em; border: none; border-radius: 10px;
+      background: #ff7fb8; color: #fff; cursor: pointer; transition: 0.2s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
     }
-    .games button:hover { background: #66bb6a; }
+    .games button:hover { background: #ff98c6; }
     #back-btn { display: none; align-self: flex-start; }
-    .games canvas { background: #222; border-radius: 10px; }
+    .games canvas { background: #f3f3f3; border-radius: 10px; }
   </style>
 </head>
 <body>
@@ -140,9 +141,9 @@
         } else {
           snake.pop();
         }
-        ctx.fillStyle = '#222'; ctx.fillRect(0,0,400,400);
+        ctx.fillStyle = '#f3f3f3'; ctx.fillRect(0,0,400,400);
         ctx.fillStyle = '#4CAF50'; snake.forEach(p => ctx.fillRect(p.x,p.y,20,20));
-        ctx.fillStyle = 'red'; ctx.fillRect(food.x, food.y, 20, 20);
+        ctx.fillStyle = '#ff4d6d'; ctx.fillRect(food.x, food.y, 20, 20);
         setTimeout(gameLoop, 100);
       }
       gameLoop();
@@ -160,8 +161,8 @@
         playerX = e.clientX - canvas.getBoundingClientRect().left - 25;
       });
       function gameLoop() {
-        ctx.fillStyle = '#222'; ctx.fillRect(0,0,400,400);
-        ctx.fillStyle = 'red'; ctx.beginPath();
+        ctx.fillStyle = '#f3f3f3'; ctx.fillRect(0,0,400,400);
+        ctx.fillStyle = '#ff4d6d'; ctx.beginPath();
         ctx.arc(ballX+15, ballY+15, 15, 0, Math.PI*2); ctx.fill();
         ctx.fillStyle = '#4CAF50';
         ctx.fillRect(playerX, 370, 50, 20);
@@ -170,7 +171,7 @@
           score++; ballY = 0; ballX = Math.random()*370;
         }
         if (ballY > 400) { ballY = 0; ballX = Math.random()*370; }
-        ctx.fillStyle = 'white';
+        ctx.fillStyle = '#333';
         ctx.fillText("Score: "+score, 10, 20);
         requestAnimationFrame(gameLoop);
       }
@@ -268,10 +269,10 @@
         if(e.code === 'Space' && playerY >= 150) velY = -12;
       };
       function gameLoop() {
-        ctx.fillStyle = '#222'; ctx.fillRect(0,0,400,200);
+        ctx.fillStyle = '#f3f3f3'; ctx.fillRect(0,0,400,200);
         ctx.fillStyle = '#4CAF50'; ctx.fillRect(20, playerY, 30, 30);
-        ctx.fillStyle = 'red'; ctx.fillRect(obstacleX, 170, 30, 30);
-        ctx.fillStyle = 'white'; ctx.fillText('Score: '+score, 10, 20);
+        ctx.fillStyle = '#ff4d6d'; ctx.fillRect(obstacleX, 170, 30, 30);
+        ctx.fillStyle = '#333'; ctx.fillText('Score: '+score, 10, 20);
         playerY += velY; velY += gravity;
         if(playerY > 150) playerY = 150;
         obstacleX -= 5;
@@ -288,11 +289,3 @@
   </script>
 </body>
 </html>
-/* Scroll erlauben */
-html, body {
-  height: auto;
-  overflow-y: auto;
-
-/* Falls du eine sticky/fixed Navigation hast, gib unten drunter Platz */
-.nav { position: sticky; top: 0; }
-body { scroll-behavior: smooth; }
