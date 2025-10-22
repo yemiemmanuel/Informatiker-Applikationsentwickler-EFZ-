@@ -1,44 +1,99 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mini Spiele Sammlung</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bewerbung & Mini Spiele</title>
   <style>
     html { scroll-behavior: smooth; }
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #111;
-      color: #fff;
+      color: #333;
+      background: linear-gradient(135deg, #ffffff 0%, #fff6fb 50%, #ffeef6 100%);
     }
-    h1 { margin: 20px 0; font-size: 2em; text-align: center; }
-    #menu, #game-container {
-      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+    .nav {
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(6px);
+      padding: 10px 16px;
+      display: flex; gap: 12px;
+      border-bottom: 1px solid #e5e5e5;
+    }
+    .nav a { color: #800000; text-decoration: none; font-weight: 600; }
+
+    .container {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
       padding: 20px;
     }
-    button {
-      margin: 10px; padding: 15px 30px; font-size: 1.1em; border: none; border-radius: 10px;
-      background: #4CAF50; color: white; cursor: pointer; transition: 0.3s;
+    .header { text-align: center; margin-bottom: 30px; }
+    .header img {
+      width: 180px; height: 180px; border-radius: 50%;
+      object-fit: cover; margin-bottom: 15px; background: #ccc;
     }
-    button:hover { background: #66bb6a; }
+    .header h1 { font-size: 2rem; margin: 10px 0; color: #800000; }
+    .contact { margin: 10px 0; line-height: 1.6; }
+    .button {
+      margin-top: 20px; display: inline-block; padding: 12px 24px;
+      background-color: #800000; color: #fff; text-decoration: none;
+      border-radius: 6px; font-weight: bold; transition: background 0.3s;
+    }
+    .button:hover { background-color: #a00000; }
+    @media (max-width: 600px) { .header h1 { font-size: 1.5rem; } }
+
+    .games {
+      color: #333;
+      padding: 40px 20px 80px;
+    }
+    .games h1 { margin: 0 0 20px; font-size: 2em; text-align: center; color: #800000; }
+    #menu, #game-container {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 10px;
+    }
+    .games button {
+      margin: 10px; padding: 12px 22px; font-size: 1.05em; border: none; border-radius: 10px;
+      background: #ff7fb8; color: #fff; cursor: pointer; transition: 0.2s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    .games button:hover { background: #ff98c6; }
     #back-btn { display: none; align-self: flex-start; }
-    canvas { background: #222; border-radius: 10px; }
+    .games canvas { background: #f3f3f3; border-radius: 10px; }
   </style>
 </head>
 <body>
-  <h1>🎮 Mini Spiele Sammlung</h1>
-
-  <div id="menu">
-    <button onclick="startGame('snake')">🐍 Snake</button>
-    <button onclick="startGame('memory')">🧠 Memory</button>
-    <button onclick="startGame('mines')">💣 Minesweeper</button>
-    <button onclick="startGame('runner')">🕹️ Jump & Run</button>
-    <button onclick="startGame('catch')">🎯 Ball Catch</button>
-    <button id="back-btn" onclick="showMenu()">⬅️ Zurück</button>
+  <div class="nav">
+    <a href="#bewerbung">Bewerbung</a>
+    <a href="#spiele">Mini Spiele</a>
   </div>
 
-  <div id="game-container"></div>
+  <section id="bewerbung">
+    <div class="container">
+      <div class="header">
+        <img src="https://via.placeholder.com/180" alt="Profilfoto Platzhalter">
+        <h1>YEMI EMMANUEL</h1>
+        <div class="contact">
+          📞 076 614 13 04 <br>
+          📧 <a href="mailto:yemi.emmanuel@ict.csbe.ch">yemi.emmanuel@ict.csbe.ch</a><br>
+          🏠 Sägemattstrasse 64<br>
+          3098/Köniz
+        </div>
+        <a href="bewerbung.pdf" class="button" target="_blank">Meine Bewerbung</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="spiele" class="games">
+    <h1>🎮 Mini Spiele Sammlung</h1>
+    <div id="menu">
+      <button onclick="startGame('snake')">🐍 Snake</button>
+      <button onclick="startGame('memory')">🧠 Memory</button>
+      <button onclick="startGame('mines')">💣 Minesweeper</button>
+      <button onclick="startGame('runner')">🕹️ Jump & Run</button>
+      <button onclick="startGame('catch')">🎯 Ball Catch</button>
+      <button id="back-btn" onclick="showMenu()">⬅️ Zurück</button>
+    </div>
+    <div id="game-container"></div>
+  </section>
 
   <script>
     function startGame(game) {
@@ -86,9 +141,9 @@
         } else {
           snake.pop();
         }
-        ctx.fillStyle = '#222'; ctx.fillRect(0,0,400,400);
+        ctx.fillStyle = '#f3f3f3'; ctx.fillRect(0,0,400,400);
         ctx.fillStyle = '#4CAF50'; snake.forEach(p => ctx.fillRect(p.x,p.y,20,20));
-        ctx.fillStyle = 'red'; ctx.fillRect(food.x, food.y, 20, 20);
+        ctx.fillStyle = '#ff4d6d'; ctx.fillRect(food.x, food.y, 20, 20);
         setTimeout(gameLoop, 100);
       }
       gameLoop();
@@ -106,8 +161,8 @@
         playerX = e.clientX - canvas.getBoundingClientRect().left - 25;
       });
       function gameLoop() {
-        ctx.fillStyle = '#222'; ctx.fillRect(0,0,400,400);
-        ctx.fillStyle = 'red'; ctx.beginPath();
+        ctx.fillStyle = '#f3f3f3'; ctx.fillRect(0,0,400,400);
+        ctx.fillStyle = '#ff4d6d'; ctx.beginPath();
         ctx.arc(ballX+15, ballY+15, 15, 0, Math.PI*2); ctx.fill();
         ctx.fillStyle = '#4CAF50';
         ctx.fillRect(playerX, 370, 50, 20);
@@ -116,7 +171,7 @@
           score++; ballY = 0; ballX = Math.random()*370;
         }
         if (ballY > 400) { ballY = 0; ballX = Math.random()*370; }
-        ctx.fillStyle = 'white';
+        ctx.fillStyle = '#333';
         ctx.fillText("Score: "+score, 10, 20);
         requestAnimationFrame(gameLoop);
       }
@@ -214,10 +269,10 @@
         if(e.code === 'Space' && playerY >= 150) velY = -12;
       };
       function gameLoop() {
-        ctx.fillStyle = '#222'; ctx.fillRect(0,0,400,200);
+        ctx.fillStyle = '#f3f3f3'; ctx.fillRect(0,0,400,200);
         ctx.fillStyle = '#4CAF50'; ctx.fillRect(20, playerY, 30, 30);
-        ctx.fillStyle = 'red'; ctx.fillRect(obstacleX, 170, 30, 30);
-        ctx.fillStyle = 'white'; ctx.fillText('Score: '+score, 10, 20);
+        ctx.fillStyle = '#ff4d6d'; ctx.fillRect(obstacleX, 170, 30, 30);
+        ctx.fillStyle = '#333'; ctx.fillText('Score: '+score, 10, 20);
         playerY += velY; velY += gravity;
         if(playerY > 150) playerY = 150;
         obstacleX -= 5;
@@ -234,8 +289,3 @@
   </script>
 </body>
 </html>
-/* Scroll erlauben */
-html, body {
-  height: auto;
-  overflow-y: auto;
-}
