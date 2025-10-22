@@ -1,15 +1,1 @@
-/* Scroll erlauben */
-html, body {
-  height: auto;
-  overflow-y: auto;
-}
 
-/* Keine feste Höhe, damit Inhalt natürlich wächst */
-#menu, #game-container {
-  height: auto;      /* falls du irgendwo 90vh gesetzt hattest, rausnehmen */
-  min-height: 0;
-}
-
-/* Falls du eine sticky/fixed Navigation hast, gib unten drunter Platz */
-.nav { position: sticky; top: 0; }
-body { scroll-behavior: smooth; }
